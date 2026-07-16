@@ -1019,8 +1019,114 @@
         }
 
         /* ============================================================
-                   桌面端优化 (≥1024px)
-                   ============================================================ */
+           新增：离开站点弹窗 (独立于其他弹窗)
+           ============================================================ */
+        .leave-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9997;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.45s ease;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 800px;
+        }
+        .leave-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .leave-mask {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .leave-viewport {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+        }
+        .leave-card {
+            padding: 36px;
+            transform-style: preserve-3d;
+            transition: transform var(--anim-duration) var(--close-curve), opacity 0.45s ease;
+            transform: translateY(100px) scale(0.5) rotateY(-90deg);
+            opacity: 0;
+        }
+        .leave-modal.show .leave-card {
+            transform: translateY(0) scale(1) rotateY(0deg);
+            opacity: 1;
+        }
+        .leave-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .leave-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .leave-body {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .leave-btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+        .leave-btn {
+            padding: 10px 24px;
+            border-radius: var(--radius-lg);
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            font-family: var(--font-sans);
+        }
+        .leave-cancel {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+        }
+        .leave-cancel:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+        .leave-confirm {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            color: #fff;
+        }
+        .leave-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 111, 247, 0.35);
+        }
+        .leave-confirm:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+           桌面端优化 (≥1024px)
+           ============================================================ */
         @media (min-width: 1024px) {
             .main-wrapper {
                 max-width: 1100px;
@@ -1107,8 +1213,8 @@
         }
 
         /* ============================================================
-                   移动端 (≤1023px) 左右堆叠
-                   ============================================================ */
+           移动端 (≤1023px) 左右堆叠
+           ============================================================ */
         @media (max-width: 1023px) {
             .split-row {
                 flex-direction: column;
@@ -1226,6 +1332,12 @@
             .userinfo-item .label {
                 font-size: 0.58rem;
                 min-width: 34px;
+            }
+            .leave-card {
+                padding: 28px 22px;
+            }
+            .leave-btn-group {
+                flex-direction: column;
             }
         }
 
@@ -1471,6 +1583,28 @@
                 <li>电子书 · 编程入门</li>
             </ul>
             <button class="resource-close" id="resourceClose">我知道了</button>
+        </div>
+    </div>
+
+    <!-- ===== 离开站点安全弹窗 ===== -->
+    <div class="leave-modal" id="leaveModal" aria-hidden="true">
+        <div class="leave-mask" id="leaveMask"></div>
+        <div class="leave-viewport">
+            <div class="glass-card leave-card">
+                <div class="leave-header">
+                    <span class="leave-title">🔐 安全提示</span>
+                </div>
+                <div class="leave-body">
+                    <p>网络环境复杂，浏览外部页面请注意个人信息安全<br>确认要离开当前页面吗？</p>
+                </div>
+                <div class="leave-btn-group">
+                    <button class="leave-btn leave-cancel" id="leaveOutBtn">离开页面</button>
+                    <div class="btn-wrap">
+                        <div class="btn-mask"></div>
+                        <button class="leave-btn leave-confirm" id="stayBtn">继续停留</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2239,7 +2373,68 @@
             })();
 
             // ============================================================
-            //  8. 启动所有模块
+            //  8. 离开站点安全弹窗逻辑 (拦截所有外部链接)
+            // ============================================================
+            const leaveModal = document.getElementById('leaveModal');
+            const leaveMask = document.getElementById('leaveMask');
+            const stayBtn = document.getElementById('stayBtn');
+            const leaveOutBtn = document.getElementById('leaveOutBtn');
+
+            let pendingUrl = null; // 暂存要跳转的链接
+
+            function openLeaveModal(url) {
+                pendingUrl = url;
+                leaveModal.classList.add('show');
+                leaveModal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeLeaveModal() {
+                leaveModal.classList.remove('show');
+                leaveModal.setAttribute('aria-hidden', 'true');
+                pendingUrl = null;
+            }
+
+            // 点击遮罩关闭
+            leaveMask.addEventListener('click', closeLeaveModal);
+
+            // 继续停留
+            stayBtn.addEventListener('click', closeLeaveModal);
+
+            // 离开页面：跳转
+            leaveOutBtn.addEventListener('click', function() {
+                if (pendingUrl) {
+                    window.open(pendingUrl, '_blank');
+                    closeLeaveModal();
+                }
+            });
+
+            // 拦截所有 <a> 点击
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('a');
+                if (!target) return;
+                const href = target.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+                // 判断是否为外部链接（当前域名不同）
+                const currentDomain = window.location.hostname;
+                let linkDomain = '';
+                try {
+                    const url = new URL(href, window.location.href);
+                    linkDomain = url.hostname;
+                } catch (_) {
+                    // 无效URL则不拦截
+                    return;
+                }
+                // 如果链接域名与当前域名相同，则放行
+                if (linkDomain === currentDomain || linkDomain === '') return;
+
+                // 外部链接 → 阻止默认，弹出警告
+                e.preventDefault();
+                openLeaveModal(href);
+            });
+
+            // ============================================================
+            //  9. 启动所有模块
             // ============================================================
             loadLikes();
             loadMessages();
