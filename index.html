@@ -1,459 +1,1248 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>cccccckgnku</title>
+<meta name="description" content="cccccckgnku — Personal Website">
+<meta name="theme-color" content="#07111c">
 
-    <title>cccccckgnku</title>
+<style>
+:root{
+  --bg:#06101a;
+  --bg2:#0a1726;
+  --ink:#f0eee8;
+  --soft:#b9b6b1;
+  --dim:#737d88;
+  --red:#a92d49;
+  --red2:#c13b58;
+  --blue:#284b70;
+  --line:rgba(240,238,232,.11);
+}
 
-    <link rel="stylesheet" href="css/style.css">
+*{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  min-height:100vh;
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  overscroll-behavior-x:none;
+  touch-action:pan-y;
+  -webkit-text-size-adjust:100%;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 16% 15%,rgba(39,73,108,.18),transparent 30%),
+    radial-gradient(circle at 83% 46%,rgba(117,39,61,.10),transparent 30%),
+    linear-gradient(145deg,#06101a,#091421 48%,#040b12);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:-15%;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 20% 25%,rgba(81,113,151,.13),transparent 23%),
+    radial-gradient(circle at 76% 26%,rgba(215,221,229,.045),transparent 19%),
+    radial-gradient(circle at 61% 79%,rgba(47,72,105,.14),transparent 29%);
+  filter:blur(42px);
+  animation:ambient 20s ease-in-out infinite alternate;
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse at center,#000 10%,transparent 82%);
+}
+@keyframes ambient{
+  0%{transform:translate(-2%,0) scale(1)}
+  50%{transform:translate(2%,-1%) scale(1.04)}
+  100%{transform:translate(-1%,2%) scale(1.02)}
+}
+
+/* =========================================================
+   BOOT SCREEN — 保留原有加载动画结构与节奏
+========================================================= */
+#boot-screen{
+  position:fixed;inset:0;z-index:10000;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  background:radial-gradient(circle at center,#151d35 0%,#090d19 42%,#04060b 100%);
+  transition:opacity 1s cubic-bezier(.77,0,.18,1),visibility 1s;
+}
+#boot-screen.hide{opacity:0;visibility:hidden;pointer-events:none}
+.boot-glow{
+  position:absolute;width:460px;height:460px;border-radius:50%;
+  background:radial-gradient(circle,rgba(143,36,56,.13),transparent 68%);
+  filter:blur(30px);
+  animation:bootGlow 4s ease-in-out infinite;
+}
+@keyframes bootGlow{
+  0%,100%{transform:scale(.9);opacity:.5}
+  50%{transform:scale(1.15);opacity:1}
+}
+.boot-logo{
+  position:relative;z-index:2;
+  font-size:clamp(34px,7vw,82px);
+  font-weight:700;letter-spacing:.18em;color:transparent;
+  background:linear-gradient(110deg,#76798a,var(--ink),#fff,var(--red2),var(--ink),#727687);
+  background-size:300% auto;
+  -webkit-background-clip:text;background-clip:text;
+  opacity:0;
+  filter:blur(16px) brightness(.5) drop-shadow(0 0 30px rgba(238,233,223,.12));
+  animation:bootText 2.4s cubic-bezier(.16,1,.3,1) forwards,bootShine 3s 1s linear infinite;
+}
+@keyframes bootText{
+  0%{opacity:0;transform:scale(.72) translateY(12px);letter-spacing:.65em;filter:blur(22px) brightness(.3)}
+  35%{opacity:1}
+  75%{filter:blur(0) brightness(1.2)}
+  100%{opacity:1;transform:scale(1) translateY(0);letter-spacing:.18em;filter:blur(0) brightness(1)}
+}
+@keyframes bootShine{to{background-position:300% center}}
+.boot-scan{
+  position:absolute;width:min(650px,75vw);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(238,233,223,.8),rgba(143,36,56,.9),transparent);
+  box-shadow:0 0 18px rgba(143,36,56,.45);
+  animation:scan 2.4s cubic-bezier(.16,1,.3,1) forwards;
+  transform:scaleX(0);
+}
+@keyframes scan{
+  0%{transform:scaleX(0);opacity:0}
+  35%{transform:scaleX(1);opacity:1}
+  100%{transform:scaleX(1) translateY(80px);opacity:0}
+}
+
+/* =========================================================
+   DYNAMIC BACKGROUND
+========================================================= */
+#dynamic-bg{
+  position:fixed;inset:0;width:100%;height:100%;
+  z-index:-3;pointer-events:none;opacity:.95;
+}
+
+/* extra visible atmosphere */
+#site::before{
+  content:"";
+  position:fixed;
+  inset:-25%;
+  z-index:-4;
+  pointer-events:none;
+  background:
+    conic-gradient(from 20deg at 52% 50%,
+      rgba(33,89,145,.08),
+      rgba(163,35,68,.06),
+      rgba(71,104,164,.07),
+      rgba(30,72,117,.04),
+      rgba(163,35,68,.06),
+      rgba(33,89,145,.08));
+  filter:blur(70px);
+  animation:pageSheen 18s linear infinite;
+}
+@keyframes pageSheen{
+  from{transform:rotate(0deg) scale(1.04)}
+  to{transform:rotate(360deg) scale(1.04)}
+}
+#cursor-glow{
+  position:fixed;left:0;top:0;width:220px;height:220px;
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(188,216,255,.12),rgba(110,143,185,.045) 30%,transparent 70%);
+  filter:blur(2px);opacity:0;transition:opacity .3s;
+  mix-blend-mode:screen;
+}
+body.pointer-active #cursor-glow{opacity:1}
+.pointer-trace{
+  position:fixed;width:5px;height:5px;border-radius:50%;
+  pointer-events:none;z-index:9997;
+  background:rgba(218,230,246,.42);
+  box-shadow:0 0 14px rgba(171,204,243,.25);
+  animation:trace .75s ease-out forwards;
+}
+@keyframes trace{
+  0%{opacity:.65;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(3.8)}
+}
+.interaction-ripple{
+  position:fixed;width:8px;height:8px;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(215,230,255,.72);
+  box-shadow:0 0 20px rgba(180,205,255,.3);
+  animation:ripple .85s cubic-bezier(.15,.7,.25,1) forwards;
+}
+@keyframes ripple{
+  0%{width:8px;height:8px;opacity:.8}
+  100%{width:140px;height:140px;opacity:0}
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+#site{opacity:0;transform:translateY(24px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1)}
+#site.show{opacity:1;transform:none}
+
+main{position:relative}
+.editorial{
+  position:relative;
+  min-height:100svh;
+  width:100%;
+  overflow:hidden;
+}
+.inner{
+  width:min(1240px,100%);
+  min-height:100svh;
+  margin:auto;
+  padding:clamp(70px,9vw,125px) clamp(28px,7vw,90px);
+  position:relative;
+}
+.micro{
+  color:#7f8790;
+  font-size:11px;
+  line-height:1;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+}
+.micro.red{color:var(--red2)}
+.rule{
+  width:195px;height:1px;
+  background:linear-gradient(90deg,var(--red2),rgba(193,59,88,.08));
+  box-shadow:0 0 14px rgba(193,59,88,.22);
+}
+
+/* HERO — 按参考图重新排版 */
+.hero .inner{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding-top:clamp(80px,10vh,145px);
+  padding-bottom:80px;
+}
+.hero-copy{position:relative;z-index:3;max-width:850px}
+.hero .micro{margin-bottom:46px}
+.hero-title{
+  font-size:clamp(62px,11vw,142px);
+  line-height:.83;
+  letter-spacing:-.075em;
+  font-weight:760;
+  white-space:nowrap;
+  color:var(--ink);
+  text-shadow:0 0 45px rgba(238,238,232,.045);
+  margin-left:-4px;
+}
+.hero-title .red{color:var(--red2)}
+.hero-sub{
+  margin-top:62px;
+  max-width:680px;
+  color:#b4b2af;
+  font-size:clamp(18px,2.1vw,28px);
+  line-height:1.45;
+  letter-spacing:-.025em;
+}
+.hero .rule{margin-top:74px}
+.hero-meta{
+  margin-top:70px;
+  color:#747e89;
+  font-size:12px;
+  letter-spacing:.27em;
+}
+.hero-meta span{margin:0 12px;color:#59636e}
+
+.hero-image{
+  position:absolute;
+  z-index:2;
+  right:-2%;
+  bottom:15.5%;
+  width:min(53vw,560px);
+  aspect-ratio:.84;
+  overflow:hidden;
+  background:#101827;
+  box-shadow:0 30px 100px rgba(0,0,0,.28);
+}
+.hero-image img{
+  width:100%;height:100%;display:block;object-fit:cover;
+  filter:contrast(1.04) saturate(.78);
+  transform:scale(1.025);
+  transition:transform .9s cubic-bezier(.16,1,.3,1),filter .7s ease;
+}
+.hero-image::before{
+  content:"";
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(7,16,26,.12),transparent 40%),
+    linear-gradient(0deg,rgba(7,16,26,.28),transparent 35%);
+}
+.hero-image::after{
+  content:"";
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  opacity:.22;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.035) 4px);
+  mix-blend-mode:screen;
+}
+.hero-image:hover img{transform:scale(1.018);filter:contrast(1.08) saturate(.92) brightness(1.06)}
+
+.scroll-hint{
+  position:absolute;left:clamp(28px,7vw,90px);bottom:42px;
+  display:flex;align-items:center;gap:25px;
+  color:#69737d;font-size:11px;letter-spacing:.3em;
+}
+.scroll-hint i{display:block;width:98px;height:1px;background:#6d7783}
+
+/* ABOUT — 直接对应第二张参考图 */
+.about .inner{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding-top:clamp(85px,10vh,145px);
+}
+.section-number{margin-bottom:56px}
+.section-label{
+  color:#8a929a;
+  font-size:12px;
+  letter-spacing:.32em;
+  margin-bottom:56px;
+}
+.about-title{
+  max-width:700px;
+  font-size:clamp(58px,9vw,116px);
+  line-height:.86;
+  letter-spacing:-.07em;
+  font-weight:760;
+  margin-bottom:105px;
+}
+.about-title span{display:block;color:#c8b6aa}
+.about-copy{
+  max-width:790px;
+  color:#a9aaac;
+  font-size:clamp(19px,2.35vw,31px);
+  line-height:1.8;
+  letter-spacing:-.02em;
+}
+.about-copy strong{color:#d7d5d0;font-weight:500}
+
+/* 其余页面保持同一编辑感，不再使用原来的卡片网格 */
+.list-section .inner{padding-top:clamp(90px,11vh,145px)}
+.list-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;margin-bottom:70px}
+.list-title{
+  font-size:clamp(54px,8vw,104px);
+  line-height:.9;letter-spacing:-.07em;
+}
+.list-line{height:1px;flex:1;background:linear-gradient(90deg,var(--red2),transparent);margin-bottom:10px}
+.rows{border-top:1px solid var(--line)}
+.row{
+  min-height:120px;
+  display:grid;
+  grid-template-columns:90px 1fr auto;
+  align-items:center;
+  gap:28px;
+  border-bottom:1px solid var(--line);
+  color:var(--ink);
+  text-decoration:none;
+  transition:background .35s,padding .45s,border-color .35s;
+}
+.row:hover{background:rgba(180,205,235,.035);padding-left:18px;border-color:rgba(193,59,88,.32)}
+.row-num{font-size:11px;color:var(--red2);letter-spacing:.2em}
+.row-name{font-size:clamp(20px,2.4vw,30px);letter-spacing:-.03em}
+.row-desc{color:#737d87;font-size:12px;letter-spacing:.08em}
+.row-arrow{color:#818b96;font-size:22px;transition:transform .35s,color .35s}
+.row:hover .row-arrow{transform:translateX(8px);color:var(--red2)}
+
+footer{
+  min-height:25vh;
+  width:min(1240px,100%);
+  margin:auto;
+  padding:60px clamp(28px,7vw,90px) 45px;
+  border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;
+  color:#68727c;font-size:11px;letter-spacing:.18em;
+}
+
+/* blur transition */
+#page-transition{
+  position:fixed;inset:0;z-index:15000;pointer-events:none;
+  opacity:0;visibility:hidden;
+  background:rgba(4,7,13,.12);
+  backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0);
+  transition:opacity .28s ease,backdrop-filter .28s ease,visibility 0s linear .28s;
+}
+#page-transition.active{
+  opacity:1;visibility:visible;
+  backdrop-filter:blur(18px) saturate(.72);
+  -webkit-backdrop-filter:blur(18px) saturate(.72);
+  transition:opacity .2s ease,backdrop-filter .2s ease,visibility 0s;
+}
+#page-transition .transition-blur{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(238,233,223,.045),transparent 36%),
+    radial-gradient(circle at 80% 20%,rgba(143,36,56,.07),transparent 30%);
+}
+.section-focus{animation:sectionFocus .65s cubic-bezier(.16,1,.3,1) both}
+@keyframes sectionFocus{
+  0%{opacity:.35;filter:blur(10px);transform:translateY(14px)}
+  55%{opacity:1;filter:blur(1px);transform:translateY(0)}
+  100%{opacity:1;filter:blur(0);transform:none}
+}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+
+/* external link modal */
+.modal{
+  position:fixed;inset:0;z-index:11000;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  background:rgba(3,5,10,.62);backdrop-filter:blur(16px);
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;
+}
+.modal.active{opacity:1;visibility:visible}
+.modal-box{
+  width:min(430px,100%);padding:30px;border-radius:22px;
+  border:1px solid rgba(238,233,223,.13);
+  background:rgba(10,17,27,.94);
+  box-shadow:0 35px 100px rgba(0,0,0,.55);
+  transform:translateY(20px) scale(.96);
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.modal.active .modal-box{transform:none}
+.modal-warning{
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:20px;border-radius:12px;color:var(--ink);
+  background:rgba(143,36,56,.18);border:1px solid rgba(143,36,56,.35)
+}
+.modal-box h3{font-size:20px;margin-bottom:12px}
+.modal-box p{color:#89919a;line-height:1.75;font-size:13px;margin-bottom:25px}
+.modal-buttons{display:flex;gap:10px}
+.modal-buttons button{flex:1;border:0;padding:13px;border-radius:13px;cursor:pointer;font-size:13px}
+.cancel{color:var(--ink);background:rgba(238,233,223,.07)}
+.confirm{color:#fff;background:var(--red);box-shadow:0 8px 25px rgba(143,36,56,.25)}
+
+#timeout-notice{
+  position:fixed;right:22px;bottom:22px;z-index:12000;
+  width:min(360px,calc(100vw - 44px));padding:17px 18px;
+  display:flex;gap:13px;border:1px solid rgba(143,36,56,.38);
+  border-radius:17px;background:rgba(13,17,29,.92);backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(20px) scale(.96);pointer-events:none;
+  transition:opacity .4s,transform .4s
+}
+#timeout-notice.show{opacity:1;transform:none}
+.timeout-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:9px;color:var(--ink);background:rgba(143,36,56,.22)}
+.timeout-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.timeout-text{color:#89919a;font-size:11px;line-height:1.6}
+
+/* mobile composition — 参考图的竖屏优先 */
+@media(max-width:800px){
+  .hero .inner{
+    justify-content:flex-start;
+    min-height:100svh;
+    height:100svh;
+    padding-top:clamp(78px,9.5vh,125px);
+    padding-bottom:56px;
+  }
+  .hero .micro{margin-bottom:34px;font-size:10px;letter-spacing:.34em}
+  .hero-title{
+    font-size:clamp(42px,11.8vw,78px);
+    line-height:.9;
+    white-space:normal;
+    max-width:91vw;
+    overflow-wrap:anywhere;
+  }
+  .hero-sub{
+    margin-top:45px;
+    max-width:72vw;
+    font-size:15px;
+    line-height:1.48;
+  }
+  .hero .rule{margin-top:46px;width:145px}
+  .hero-meta{margin-top:44px;font-size:10px}
+  .hero-image{
+    width:min(42vw,260px);
+    max-width:42vw;
+    right:0;
+    bottom:15%;
+    aspect-ratio:1 / 1;
+  }
+  .scroll-hint{bottom:31px;gap:22px}
+  .scroll-hint i{width:96px}
+  .about .inner{padding-top:clamp(85px,10vh,145px)}
+  .section-number{margin-bottom:68px}
+  .section-label{margin-bottom:57px}
+  .about-title{font-size:clamp(58px,15vw,105px);margin-bottom:106px}
+  .about-copy{font-size:20px;line-height:1.75;max-width:94vw}
+  .list-head{margin-bottom:52px}
+  .list-line{display:none}
+  .row{grid-template-columns:42px 1fr auto;gap:15px;min-height:105px}
+  .row-desc{display:none}
+  .row:hover{padding-left:10px}
+  footer{min-height:22vh;flex-direction:column;gap:12px}
+}
+@media(max-width:420px){
+  .hero-title{font-size:61px}
+  .hero-image{bottom:21%;width:62vw;max-width:62vw;right:0}
+  .hero-sub{max-width:82vw;font-size:18px}
+  .about-title{font-size:61px}
+  .about-copy{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+
+/* viewport stability */
+img,canvas,svg,video{max-width:100%}
+section,main,#site{max-width:100vw}
+@media(max-width:800px){
+  body{overflow-x:clip}
+  .inner{width:100%;max-width:100vw}
+}
+
+
+@media(max-width:800px){
+  section{min-height:100svh;max-height:100svh;overflow:hidden}
+  .section-enter-blur{animation-duration:.62s}
+  .hero-image img{object-fit:contain}
+  .pointer-trace{transform:translate(-50%,-50%) scale(.72)}
+}
+
+
+/* Complete loading -> home transition */
+#page-transition{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#050c15;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:1;
+  backdrop-filter:blur(0);
+  -webkit-backdrop-filter:blur(0);
+  transition:opacity 1.15s cubic-bezier(.2,.8,.2,1),
+             backdrop-filter 1.2s ease,
+             -webkit-backdrop-filter 1.2s ease;
+}
+#page-transition .transition-blur{
+  position:absolute;
+  inset:-18%;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(106,153,210,.20),transparent 22%),
+    radial-gradient(circle at 25% 30%,rgba(31,94,151,.18),transparent 28%),
+    radial-gradient(circle at 78% 65%,rgba(157,40,72,.15),transparent 28%);
+  filter:blur(42px);
+  transform:scale(1.08);
+  animation:transitionBreath 2.2s ease-in-out infinite;
+}
+#page-transition .transition-noise{
+  position:absolute;
+  inset:-50%;
+  opacity:.09;
+  background-image:
+    radial-gradient(rgba(255,255,255,.6) .5px,transparent .7px);
+  background-size:5px 5px;
+  animation:transitionNoise 1.4s steps(5) infinite;
+}
+#page-transition .transition-line{
+  position:absolute;
+  width:34vw;
+  max-width:320px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(220,232,247,.7),transparent);
+  box-shadow:0 0 28px rgba(126,181,238,.32);
+  animation:transitionScan 1.8s cubic-bezier(.65,0,.25,1) infinite;
+}
+#page-transition .transition-word{
+  position:relative;
+  z-index:2;
+  color:rgba(240,244,249,.86);
+  font-size:10px;
+  letter-spacing:.52em;
+  text-indent:.52em;
+  animation:transitionText 1.6s ease-in-out infinite;
+}
+#page-transition.is-leaving{
+  opacity:0;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+@keyframes transitionBreath{
+  0%,100%{transform:scale(1.08);opacity:.75}
+  50%{transform:scale(1.18);opacity:1}
+}
+@keyframes transitionNoise{
+  0%{transform:translate3d(0,0,0)}
+  25%{transform:translate3d(2%, -1%,0)}
+  50%{transform:translate3d(-1%,2%,0)}
+  75%{transform:translate3d(1%,-2%,0)}
+  100%{transform:translate3d(0,0,0)}
+}
+@keyframes transitionScan{
+  0%{transform:translateY(-40vh) scaleX(.3);opacity:0}
+  28%{opacity:.9}
+  55%{transform:translateY(40vh) scaleX(1);opacity:.65}
+  100%{transform:translateY(115vh) scaleX(.45);opacity:0}
+}
+@keyframes transitionText{
+  0%,100%{opacity:.35;letter-spacing:.46em;filter:blur(1.5px)}
+  50%{opacity:.95;letter-spacing:.58em;filter:blur(0)}
+}
+
+/* Category transitions: every category, including category 01 */
+.section-enter-blur{
+  animation:sectionEnterBlur .72s cubic-bezier(.18,.72,.2,1) both;
+}
+@keyframes sectionEnterBlur{
+  0%{
+    opacity:0;
+    filter:blur(18px);
+    transform:translateY(18px) scale(.985);
+  }
+  55%{
+    opacity:.82;
+    filter:blur(6px);
+    transform:translateY(4px) scale(.995);
+  }
+  100%{
+    opacity:1;
+    filter:blur(0);
+    transform:translateY(0) scale(1);
+  }
+}
+
+
+/* Avatar interaction */
+#avatar-trigger{
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  will-change:transform,filter;
+}
+#avatar-trigger::after{
+  content:"";
+  position:absolute;
+  inset:-12px;
+  border:1px solid rgba(177,210,242,0);
+  border-radius:inherit;
+  pointer-events:none;
+  transition:border-color .35s ease,transform .45s ease,opacity .45s ease;
+}
+#avatar-trigger.avatar-pulse{
+  animation:avatarPulse .48s cubic-bezier(.2,.8,.2,1);
+}
+#avatar-trigger.avatar-pulse::after{
+  border-color:rgba(177,210,242,.18);
+  transform:scale(1.035);
+  opacity:0;
+}
+@keyframes avatarPulse{
+  0%{transform:scale(1)}
+  35%{transform:scale(.965)}
+  72%{transform:scale(1.018)}
+  100%{transform:scale(1)}
+}
+.avatar-message{
+  position:fixed;
+  z-index:10000;
+  left:50%;
+  bottom:14vh;
+  transform:translate(-50%,14px);
+  max-width:80vw;
+  padding:10px 18px;
+  border:1px solid rgba(192,213,235,.12);
+  background:rgba(7,14,24,.48);
+  color:rgba(242,245,249,.86);
+  font-size:12px;
+  letter-spacing:.18em;
+  text-align:center;
+  white-space:nowrap;
+  opacity:0;
+  filter:blur(7px);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  pointer-events:none;
+  transition:opacity .35s ease,transform .5s cubic-bezier(.2,.8,.2,1),filter .5s ease;
+}
+.avatar-message.show{
+  opacity:1;
+  transform:translate(-50%,0);
+  filter:blur(0);
+}
+
+</style>
 </head>
 
 <body>
+<canvas id="dynamic-bg" aria-hidden="true"></canvas>
+<div id="cursor-glow" aria-hidden="true"></div>
+<div id="page-transition" aria-hidden="true"><div class="transition-blur"></div></div>
 
-<!-- =========================
-     背景
-========================= -->
-
-<div class="background">
-
-    <div class="aurora aurora-1"></div>
-    <div class="aurora aurora-2"></div>
-    <div class="aurora aurora-3"></div>
-
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <div class="grid"></div>
-
-    <canvas id="particles"></canvas>
-
-    <div class="noise"></div>
-
+<div id="boot-screen">
+  <div class="boot-glow"></div>
+  <div class="boot-scan"></div>
+  <div class="boot-logo">cccccckgnku</div>
 </div>
 
-
-<!-- =========================
-     Loading
-========================= -->
-
-<div id="loader">
-
-    <div class="loader-content">
-
-        <div class="loader-logo">
-            cccccc<span>kgnku</span>
-        </div>
-
-        <div class="loader-line">
-            <div id="loader-progress"></div>
-        </div>
-
-        <div id="loader-status">
-            INITIALIZING...
-        </div>
-
-    </div>
-
+<div id="page-transition" aria-hidden="true">
+  <div class="transition-noise"></div>
+  <div class="transition-blur"></div>
+  <div class="transition-line"></div>
+  <div class="transition-word">NEXUS</div>
 </div>
-
-
-<!-- =========================
-     导航
-========================= -->
-
-<header class="topbar">
-
-    <!-- 左上角导航 -->
-
-    <button
-        class="menu-button"
-        id="menu-button"
-        aria-label="打开导航"
-    >
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
-
-    <!-- 右上角音乐 -->
-
-    <button
-        class="music-button"
-        id="music-button"
-        aria-label="播放音乐"
-    >
-        <span id="music-icon">♪</span>
-    </button>
-
-</header>
-
-
-<!-- =========================
-     导航菜单
-========================= -->
-
-<nav class="menu" id="menu">
-
-    <div class="menu-inner">
-
-        <div class="menu-title">
-            NAVIGATION
-        </div>
-
-        <a href="#home" class="menu-link">
-            <span>00</span>
-            HOME
-        </a>
-
-        <a href="#about" class="menu-link">
-            <span>01</span>
-            ABOUT
-        </a>
-
-        <a href="#findme" class="menu-link">
-            <span>02</span>
-            FIND ME
-        </a>
-
-        <a href="#projects" class="menu-link">
-            <span>03</span>
-            PROJECTS
-        </a>
-
-        <a href="#contact" class="menu-link">
-            <span>04</span>
-            CONTACT
-        </a>
-
-    </div>
-
-</nav>
-
-
-<!-- =========================
-     音乐
-========================= -->
-
-<audio id="audio"></audio>
-
-
-<!-- =========================
-     主页面
-========================= -->
-
+<div class="avatar-message" id="avatar-message"></div>
+<div id="site">
 <main>
 
-
-<!-- HOME -->
-
-<section
-    id="home"
-    class="section hero"
->
-
-    <div class="hero-content">
-
-        <div class="hero-small">
-            PERSONAL WEBSITE
-        </div>
-
-        <h1>
-            cccccc<span>kgnku</span>
-        </h1>
-
-        <p class="hero-description">
-            A small digital space
-            built around me.
-        </p>
-
-        <div class="hero-line"></div>
-
-        <div class="hero-meta">
-
-            <span>
-                2026
-            </span>
-
-            <span>
-                /
-            </span>
-
-            <span>
-                ONLINE
-            </span>
-
-        </div>
-
+<section class="editorial hero" id="home">
+  <div class="inner">
+    <div class="hero-copy">
+      <div class="micro">PERSONAL WEBSITE</div>
+      <h1 class="hero-title">cccccc<span class="red">kgnku</span></h1>
+      <p class="hero-sub">A small digital space built around me.</p>
+      <div class="rule"></div>
+      <div class="hero-meta">2026 <span>/</span> ONLINE</div>
     </div>
 
-
-    <div class="hero-avatar">
-
-        <div class="avatar-glow"></div>
-
-        <img
-            src="web/cacccckgnku.png"
-            alt="cccccckgnku avatar"
-        >
-
+    <div class="hero-image" id="avatar-trigger" role="button" tabindex="0" aria-label="点击头像">
+      <img src="https://raw.githubusercontent.com/hate984890/hate984890.github.io/main/cacccckgnku.png" alt="cccccckgnku" decoding="async" fetchpriority="low">
     </div>
 
-
-    <div class="scroll-indicator">
-        SCROLL
-        <span></span>
-    </div>
-
+    <div class="scroll-hint"><span>SCROLL</span><i></i></div>
+  </div>
 </section>
 
-
-<!-- ABOUT -->
-
-<section
-    id="about"
-    class="section content-section"
->
-
-    <div class="section-number">
-        01
-    </div>
-
-    <div class="section-content">
-
-        <div class="section-label">
-            ABOUT
-        </div>
-
-        <h2>
-            A little<br>
-            <span>about me.</span>
-        </h2>
-
-        <p>
-            Welcome to my personal space.
-            This website collects some of
-            my interests, projects and places
-            where you can find me.
-        </p>
-
-    </div>
-
+<section class="editorial about" id="about">
+  <div class="inner">
+    <div class="micro red section-number reveal">01</div>
+    <div class="section-label reveal">ABOUT</div>
+    <h2 class="about-title reveal">A little<span>about me.</span></h2>
+    <p class="about-copy reveal">
+      Welcome to my personal space. This website collects some of my
+      <strong>interests, projects</strong> and places where you can find me.
+    </p>
+  </div>
 </section>
 
-
-<!-- FIND ME -->
-
-<section
-    id="findme"
-    class="section content-section"
->
-
-    <div class="section-number">
-        02
+<section class="editorial list-section" id="social">
+  <div class="inner">
+    <div class="list-head reveal">
+      <div>
+        <div class="micro red" style="margin-bottom:20px">02</div>
+        <h2 class="list-title">Find me.</h2>
+      </div>
+      <div class="list-line"></div>
     </div>
-
-    <div class="section-content">
-
-        <div class="section-label">
-            FIND ME
-        </div>
-
-        <h2>
-            Around<br>
-            <span>the internet.</span>
-        </h2>
-
-
-        <div class="links-grid">
-
-            <a
-                href="https://space.bilibili.com/"
-                class="social-link external-link"
-                target="_blank"
-            >
-                <span>BILIBILI</span>
-                <small>01</small>
-            </a>
-
-
-            <a
-                href="#"
-                class="social-link external-link"
-            >
-                <span>QQ GROUP</span>
-                <small>02</small>
-            </a>
-
-
-            <a
-                href="https://www.coolapk.com/"
-                class="social-link external-link"
-                target="_blank"
-            >
-                <span>COOLAPK</span>
-                <small>03</small>
-            </a>
-
-
-            <a
-                href="#"
-                class="social-link external-link"
-            >
-                <span>KUAISHOU</span>
-                <small>04</small>
-            </a>
-
-
-            <a
-                href="#"
-                class="social-link external-link"
-            >
-                <span>DOUYIN</span>
-                <small>05</small>
-            </a>
-
-        </div>
-
+    <div class="rows">
+      <a class="row external-link reveal" href="https://www.bilibili.com/" data-name="Bilibili">
+        <span class="row-num">01</span><span class="row-name">Bilibili</span><span class="row-desc">哔哩哔哩主页</span><span class="row-arrow">↗</span>
+      </a>
+      <a class="row external-link reveal" href="#" data-name="QQ Group">
+        <span class="row-num">02</span><span class="row-name">QQ Group</span><span class="row-desc">我的QQ群</span><span class="row-arrow">↗</span>
+      </a>
+      <a class="row external-link reveal" href="https://www.coolapk.com/" data-name="CoolAPK">
+        <span class="row-num">03</span><span class="row-name">CoolAPK</span><span class="row-desc">酷安主页</span><span class="row-arrow">↗</span>
+      </a>
+      <a class="row external-link reveal" href="#" data-name="快手">
+        <span class="row-num">04</span><span class="row-name">快手</span><span class="row-desc">快手主页</span><span class="row-arrow">↗</span>
+      </a>
+      <a class="row external-link reveal" href="#" data-name="抖音">
+        <span class="row-num">05</span><span class="row-name">抖音</span><span class="row-desc">抖音主页</span><span class="row-arrow">↗</span>
+      </a>
     </div>
-
+  </div>
 </section>
 
-
-<!-- PROJECTS -->
-
-<section
-    id="projects"
-    class="section content-section"
->
-
-    <div class="section-number">
-        03
+<section class="editorial list-section" id="projects">
+  <div class="inner">
+    <div class="list-head reveal">
+      <div>
+        <div class="micro red" style="margin-bottom:20px">03</div>
+        <h2 class="list-title">Projects.</h2>
+      </div>
+      <div class="list-line"></div>
     </div>
-
-    <div class="section-content">
-
-        <div class="section-label">
-            PROJECTS
-        </div>
-
-        <h2>
-            Things<br>
-            <span>I make.</span>
-        </h2>
-
-
-        <div class="project-list">
-
-            <div class="project">
-                <span>01</span>
-                <strong>PERSONAL WEBSITE</strong>
-                <small>WEB</small>
-            </div>
-
-            <div class="project">
-                <span>02</span>
-                <strong>OC / CHARACTER</strong>
-                <small>ART</small>
-            </div>
-
-            <div class="project">
-                <span>03</span>
-                <strong>OTHER PROJECTS</strong>
-                <small>MORE</small>
-            </div>
-
-        </div>
-
+    <div class="rows">
+      <div class="row reveal"><span class="row-num">01</span><span class="row-name">OC / Illustration</span><span class="row-desc">原创角色与视觉创作</span><span class="row-arrow">+</span></div>
+      <div class="row reveal"><span class="row-num">02</span><span class="row-name">Web Experiments</span><span class="row-desc">个人网页与互动视觉</span><span class="row-arrow">+</span></div>
+      <div class="row reveal"><span class="row-num">03</span><span class="row-name">Digital Space</span><span class="row-desc">持续更新中的个人项目</span><span class="row-arrow">+</span></div>
     </div>
-
-</section>
-
-
-<!-- CONTACT -->
-
-<section
-    id="contact"
-    class="section contact-section"
->
-
-    <div class="section-number">
-        04
-    </div>
-
-    <div class="contact-content">
-
-        <div class="section-label">
-            CONTACT
-        </div>
-
-        <h2>
-            See you<br>
-            <span>around.</span>
-        </h2>
-
-        <div class="contact-bottom">
-            cccccc<span>kgnku</span>
-        </div>
-
-    </div>
-
+  </div>
 </section>
 
 </main>
 
+<footer>
+  <span>© 2026 cccccckgnku</span>
+  <span>PERSONAL WEBSITE</span>
+</footer>
+</div>
 
-<!-- =========================
-     外链提示
-========================= -->
-
-<div
-    class="modal"
-    id="external-modal"
->
-
-    <div class="modal-box">
-
-        <div class="modal-title">
-            EXTERNAL LINK
-        </div>
-
-        <p>
-            You are about to leave this website.
-        </p>
-
-        <div class="modal-buttons">
-
-            <button id="cancel-link">
-                CANCEL
-            </button>
-
-            <button id="confirm-link">
-                CONTINUE
-            </button>
-
-        </div>
-
+<div class="modal" id="externalModal">
+  <div class="modal-box">
+    <div class="modal-warning">!</div>
+    <h3>即将离开本站</h3>
+    <p>你即将访问外部网站。外部页面的内容与安全性由对应网站负责。确定要继续访问吗？</p>
+    <div class="modal-buttons">
+      <button class="cancel" id="cancelBtn">返回</button>
+      <button class="confirm" id="confirmBtn">继续访问</button>
     </div>
-
+  </div>
 </div>
 
-
-<!-- =========================
-     超时提示
-========================= -->
-
-<div
-    class="timeout-notice"
-    id="timeout-notice"
->
-    加载超时，已显示页面
+<div id="timeout-notice">
+  <div class="timeout-icon">!</div>
+  <div><div class="timeout-title">加载超时</div><div class="timeout-text">已显示页面，部分资源可能仍在后台加载。</div></div>
 </div>
 
+<script>
+/* =========================================================
+   BOOT — 保持原有 3.2 秒进入主页 + 10 秒硬超时
+========================================================= */
+const bootScreen=document.getElementById("boot-screen");
+const site=document.getElementById("site");
+const timeoutNotice=document.getElementById("timeout-notice");
+let pageShown=false;
 
-<script src="js/main.js"></script>
+function showMainPage(isTimeout=false){
+  if(pageShown)return;
+  pageShown=true;
+  bootScreen.classList.add("hide");
+  site.classList.add("show");
+  if(isTimeout){
+    setTimeout(()=>timeoutNotice.classList.add("show"),500);
+    setTimeout(()=>timeoutNotice.classList.remove("show"),8500);
+  }
+}
+document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>showMainPage(false),3200));
+setTimeout(()=>{if(!pageShown)showMainPage(true)},10000);
+
+/* =========================================================
+   DYNAMIC BACKGROUND
+   雾化色块 + 微粒 + 极细流线；完全内置，无外部依赖
+========================================================= */
+(()=>{
+  const canvas=document.getElementById("dynamic-bg");
+  const ctx=canvas.getContext("2d",{alpha:true});
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w=0,h=0,dpr=1,last=0,particles=[],mouse={
+    x:-9999,y:-9999,active:false,lastMove:0,
+    vx:0,vy:0
+  };
+
+  const palette=[
+    [52,82,119],[96,112,140],[156,47,70],[199,204,211],[35,58,87]
+  ];
+
+  function resize(){
+    w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,2);
+    canvas.width=w*dpr;canvas.height=h*dpr;
+    canvas.style.width=w+"px";canvas.style.height=h+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.min(230,Math.max(72,Math.floor(w*h/7800)));
+    particles=Array.from({length:n},(_,i)=>({
+      x:Math.random()*w,y:Math.random()*h,
+      r:.3+Math.random()*1.45,
+      vx:(Math.random()-.5)*.055,
+      vy:(Math.random()-.5)*.055,
+      a:.055+Math.random()*.28,
+      p:Math.random()*6.28,
+      s:.00018+Math.random()*.0009,
+      c:palette[i%palette.length],
+      life:Math.random(),
+      orbit:Math.random()*6.28,
+      phase:Math.random()*6.28
+    }));
+  }
+
+  function blob(x,y,r,c,a){
+    const g=ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${a})`);
+    g.addColorStop(.42,`rgba(${c[0]},${c[1]},${c[2]},${a*.38})`);
+    g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  }
+
+  function draw(t){
+    const dt=Math.min(32,t-last||16);last=t;
+    ctx.clearRect(0,0,w,h);
+
+    /* 大面积流动雾团：比上一版明显很多，但仍然是 2D / 平面效果 */
+    blob(w*.15+Math.sin(t*.00010)*w*.12,
+         h*.18+Math.cos(t*.00008)*h*.10,
+         Math.max(w,h)*.52,[28,84,145],.19);
+
+    blob(w*.82+Math.cos(t*.00012)*w*.11,
+         h*.42+Math.sin(t*.00009)*h*.13,
+         Math.max(w,h)*.48,[166,35,66],.13);
+
+    blob(w*.50+Math.sin(t*.00007)*w*.17,
+         h*.78+Math.cos(t*.00010)*h*.08,
+         Math.max(w,h)*.42,[77,104,153],.12);
+
+    blob(w*.50+Math.cos(t*.00006)*w*.08,
+         h*.36+Math.sin(t*.00011)*h*.09,
+         Math.max(w,h)*.30,[210,217,228],.045);
+
+    /* 鼠标附近的动态冷光 */
+    if(mouse.active){
+      blob(mouse.x,mouse.y,Math.max(w,h)*.21,[100,170,235],.10);
+      blob(mouse.x+w*.04,mouse.y-h*.025,Math.max(w,h)*.11,[195,61,91],.045);
+    }
+
+    /* 环形光晕 */
+    const cx=w*.52+Math.sin(t*.00009)*w*.03;
+    const cy=h*.48+Math.cos(t*.00008)*h*.025;
+    for(let i=0;i<4;i++){
+      const rr=Math.min(w,h)*(0.18+i*.075)+Math.sin(t*.0007+i)*7;
+      ctx.beginPath();
+      ctx.arc(cx,cy,rr,0,Math.PI*2);
+      ctx.lineWidth=1;
+      ctx.strokeStyle=`rgba(${i%2?164:106},${i%2?56:145},${i%2?82:210},${0.045-i*.007})`;
+      ctx.stroke();
+    }
+
+    /* 流动粒子：
+       无操作 -> 自由漂散；
+       指针/手指靠近 -> 粒子吸附、聚拢并产生连线；
+       快速移动 -> 被拖拽后带有一点惯性。 */
+    let nearby=[];
+    particles.forEach((p,idx)=>{
+      const driftX=Math.sin(t*.00030+p.phase)*.020;
+      const driftY=Math.cos(t*.00024+p.orbit)*.020;
+
+      if(!reduced){
+        if(mouse.active){
+          const dx=mouse.x-p.x,dy=mouse.y-p.y;
+          const dist=Math.hypot(dx,dy);
+          const radius=185;
+
+          if(dist<radius){
+            const force=Math.pow(1-dist/radius,2);
+            const pull=.008 + force*.072;
+            p.vx += (dx/(dist||1))*pull*dt;
+            p.vy += (dy/(dist||1))*pull*dt;
+
+            /* 指针移动时产生一点方向性拖拽 */
+            p.vx += mouse.vx*force*.018;
+            p.vy += mouse.vy*force*.018;
+
+            if(dist<190) nearby.push({p,dist,force});
+          }else{
+            p.vx += driftX*.15*dt;
+            p.vy += driftY*.15*dt;
+          }
+        }else{
+          /* 没有操作时，缓慢、随机、自然地飘散 */
+          p.vx += driftX*dt*.55 + Math.sin(t*.00017+p.p)*.004;
+          p.vy += driftY*dt*.55 + Math.cos(t*.00019+p.phase)*.004;
+        }
+
+        /* 阻尼：避免粒子越跑越快 */
+        p.vx*=.985;
+        p.vy*=.985;
+
+        const speed=Math.hypot(p.vx,p.vy);
+        const maxSpeed=mouse.active ? .72 : .16;
+        if(speed>maxSpeed){
+          p.vx=p.vx/speed*maxSpeed;
+          p.vy=p.vy/speed*maxSpeed;
+        }
+
+        p.x+=p.vx*dt;
+        p.y+=p.vy*dt;
+
+        if(p.x<-30)p.x=w+30;
+        if(p.x>w+30)p.x=-30;
+        if(p.y<-30)p.y=h+30;
+        if(p.y>h+30)p.y=-30;
+      }
+
+      const pulse=.52+Math.sin(t*p.s+p.p)*.48;
+      const size=p.r*(1+Math.sin(t*.0006+p.phase)*.30);
+
+      /* 吸附时粒子更亮 */
+      const highlight=mouse.active
+        ? Math.max(0,1-Math.hypot(mouse.x-p.x,mouse.y-p.y)/185)
+        : 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,size+highlight*1.25,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${p.a*pulse+highlight*.20})`;
+      ctx.fill();
+
+      /* 少量粒子有细微拖尾 */
+      if(idx%9===0){
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(p.x-p.vx*280,p.y-p.vy*280);
+        ctx.lineWidth=.55+highlight*.5;
+        ctx.strokeStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${.045+highlight*.08})`;
+        ctx.stroke();
+      }
+    });
+
+    /* 被吸附到指针附近的粒子之间形成短暂的神经网络式细线 */
+    if(mouse.active && nearby.length){
+      const maxLinks=Math.min(42,nearby.length*2);
+      let links=0;
+      for(let i=0;i<nearby.length && links<maxLinks;i++){
+        for(let j=i+1;j<nearby.length && links<maxLinks;j++){
+          const a=nearby[i].p,b=nearby[j].p;
+          const dx=a.x-b.x,dy=a.y-b.y;
+          const dist=Math.hypot(dx,dy);
+          if(dist<78){
+            const alpha=(1-dist/78)*.14;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.lineWidth=.55;
+            ctx.strokeStyle=`rgba(157,195,236,${alpha})`;
+            ctx.stroke();
+            links++;
+          }
+        }
+      }
+    }
+
+    /* 指针核心吸附圈 */
+    if(mouse.active){
+      const pulse=1+Math.sin(t*.005)*.08;
+      ctx.beginPath();
+      ctx.arc(mouse.x,mouse.y,30*pulse,0,Math.PI*2);
+      ctx.strokeStyle="rgba(169,207,245,.055)";
+      ctx.lineWidth=1;
+      ctx.stroke();
+    }
+
+    /* 更明显的流光曲线 */
+    for(let i=0;i<7;i++){
+      const y=h*(.09+i*.14)+Math.sin(t*.00018+i*1.7)*48;
+      const lift=Math.sin(t*.00013+i)*90;
+      ctx.beginPath();
+      ctx.moveTo(-90,y);
+      ctx.bezierCurveTo(
+        w*.20,y-lift,
+        w*.58,y+lift*.65,
+        w+90,y+Math.cos(t*.00012+i)*60
+      );
+      ctx.lineWidth=i%2?.8:1.15;
+      ctx.strokeStyle=i%3===0
+        ? "rgba(175,205,239,.055)"
+        : "rgba(173,73,103,.032)";
+      ctx.stroke();
+    }
+
+    if(!reduced)requestAnimationFrame(draw);
+  }
+
+  addEventListener("resize",resize,{passive:true});
+  addEventListener("pointermove",e=>{
+    mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;
+  },{passive:true});
+  addEventListener("pointerleave",()=>mouse.active=false,{passive:true});
+  resize();requestAnimationFrame(draw);
+})();
+
+/* =========================================================
+   POINTER / TOUCH INTERACTION
+========================================================= */
+(()=>{
+  const glow=document.getElementById("cursor-glow");
+  let tx=innerWidth/2,ty=innerHeight/2,x=tx,y=ty,lastTrail=0,mouseMoveTime=0;
+
+  function animate(){
+    x+=(tx-x)*.12;y+=(ty-y)*.12;
+    glow.style.left=x+"px";glow.style.top=y+"px";
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  addEventListener("pointermove",e=>{
+    tx=e.clientX;ty=e.clientY;
+    document.body.classList.add("pointer-active");
+    const now=performance.now();
+    if(now-lastTrail>42){
+      const dot=document.createElement("span");
+      dot.className="pointer-trace";
+      dot.style.left=e.clientX+"px";dot.style.top=e.clientY+"px";
+      document.body.appendChild(dot);
+      setTimeout(()=>dot.remove(),780);
+      lastTrail=now;
+    }
+  },{passive:true});
+
+  addEventListener("pointerleave",()=>document.body.classList.remove("pointer-active"),{passive:true});
+
+  addEventListener("pointerdown",e=>{
+    const r=document.createElement("span");
+    r.className="interaction-ripple";
+    r.style.left=e.clientX+"px";r.style.top=e.clientY+"px";
+    document.body.appendChild(r);
+    setTimeout(()=>r.remove(),900);
+  },{passive:true});
+})();
+
+/* =========================================================
+   SCROLL REVEAL + CATEGORY BLUR TRANSITION
+========================================================= */
+(()=>{
+  const transition=document.getElementById("page-transition");
+  const sections=[...document.querySelectorAll(".editorial")];
+
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.querySelectorAll(".reveal").forEach((el,i)=>{
+          setTimeout(()=>el.classList.add("visible"),i*75);
+        });
+      }
+    });
+  },{threshold:.16});
+  sections.forEach(s=>io.observe(s));
+
+  let busy=false;
+  document.querySelectorAll('a[href^="#"]').forEach(link=>{
+    link.addEventListener("click",e=>{
+      const target=document.querySelector(link.getAttribute("href"));
+      if(!target||busy)return;
+      e.preventDefault();busy=true;
+      transition.classList.add("active");
+      setTimeout(()=>{
+        target.scrollIntoView({behavior:"instant",block:"start"});
+        target.classList.remove("section-focus");
+        void target.offsetWidth;target.classList.add("section-focus");
+        setTimeout(()=>{transition.classList.remove("active");busy=false},220);
+      },170);
+    });
+  });
+})();
+
+/* =========================================================
+   EXTERNAL LINK WARNING
+========================================================= */
+(()=>{
+  const modal=document.getElementById("externalModal");
+  const confirm=document.getElementById("confirmBtn");
+  const cancel=document.getElementById("cancelBtn");
+  let pending=null;
+
+  document.querySelectorAll(".external-link").forEach(link=>{
+    link.addEventListener("click",e=>{
+      const url=link.getAttribute("href");
+      if(!url||url==="#")return;
+      e.preventDefault();pending=url;modal.classList.add("active");
+    });
+  });
+  cancel.addEventListener("click",()=>{pending=null;modal.classList.remove("active")});
+  confirm.addEventListener("click",()=>{
+    if(pending)window.open(pending,"_blank","noopener,noreferrer");
+    pending=null;modal.classList.remove("active");
+  });
+  modal.addEventListener("click",e=>{
+    if(e.target===modal){pending=null;modal.classList.remove("active")}
+  });
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){pending=null;modal.classList.remove("active")}
+  });
+})();
+</script>
+
+<script>
+(function(){
+  /* Avatar click sequence */
+  const avatar=document.getElementById('avatar-trigger');
+  const msg=document.getElementById('avatar-message');
+  if(avatar && msg){
+    let clicks=0;
+    let msgTimer=null;
+    function showAvatarMessage(){
+      clicks++;
+      let text;
+      if(clicks===1) text='点我干嘛';
+      else if(clicks===2) text='你又点我';
+      else if(clicks===3) text='不许点我';
+      else if(clicks===4) text='那你点吧';
+      else text='点击'+clicks+'下';
+
+      msg.textContent=text;
+      msg.classList.remove('show');
+      void msg.offsetWidth;
+      msg.classList.add('show');
+
+      avatar.classList.remove('avatar-pulse');
+      void avatar.offsetWidth;
+      avatar.classList.add('avatar-pulse');
+
+      clearTimeout(msgTimer);
+      msgTimer=setTimeout(()=>msg.classList.remove('show'),1250);
+    }
+    avatar.addEventListener('click',showAvatarMessage);
+    avatar.addEventListener('keydown',e=>{
+      if(e.key==='Enter' || e.key===' '){
+        e.preventDefault();
+        showAvatarMessage();
+      }
+    });
+  }
+
+  /* Every category gets the same blur-in transition, including category 01.
+     This deliberately runs on first render of each section as well. */
+  const sections=[...document.querySelectorAll('main > section, #site section')];
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el=entry.target;
+        el.classList.remove('section-enter-blur');
+        void el.offsetWidth;
+        el.classList.add('section-enter-blur');
+      }
+    });
+  },{threshold:.18});
+
+  sections.forEach(s=>observer.observe(s));
+
+  /* Navigation clicks: immediately prime the destination with blur. */
+  document.querySelectorAll('[data-section], a[href^="#"]').forEach(link=>{
+    link.addEventListener('click',()=>{
+      const id=link.getAttribute('href');
+      if(!id || id==='#') return;
+      const target=document.querySelector(id);
+      if(target){
+        target.classList.remove('section-enter-blur');
+        void target.offsetWidth;
+        target.classList.add('section-enter-blur');
+      }
+    });
+  });
+
+  /* Full loading completion -> cinematic reveal */
+  const transition=document.getElementById('page-transition');
+  function leaveTransition(){
+    if(!transition) return;
+    setTimeout(()=>{
+      transition.classList.add('is-leaving');
+      setTimeout(()=>transition.remove(),1250);
+    },260);
+  }
+  if(document.readyState==='complete') leaveTransition();
+  else window.addEventListener('load',leaveTransition,{once:true});
+})();
+</script>
 
 </body>
 </html>
