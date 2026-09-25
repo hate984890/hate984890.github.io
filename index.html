@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>cccccckgnku</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- =========================
+     背景
+========================= -->
+
+<div class="background">
+
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="grid"></div>
+
+    <canvas id="particles"></canvas>
+
+    <div class="noise"></div>
+
+</div>
+
+
+<!-- =========================
+     Loading
+========================= -->
+
+<div id="loader">
+
+    <div class="loader-content">
+
+        <div class="loader-logo">
+            cccccc<span>kgnku</span>
+        </div>
+
+        <div class="loader-line">
+            <div id="loader-progress"></div>
+        </div>
+
+        <div id="loader-status">
+            INITIALIZING...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     导航
+========================= -->
+
+<header class="topbar">
+
+    <!-- 左上角导航 -->
+
+    <button
+        class="menu-button"
+        id="menu-button"
+        aria-label="打开导航"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+
+    <!-- 右上角音乐 -->
+
+    <button
+        class="music-button"
+        id="music-button"
+        aria-label="播放音乐"
+    >
+        <span id="music-icon">♪</span>
+    </button>
+
+</header>
+
+
+<!-- =========================
+     导航菜单
+========================= -->
+
+<nav class="menu" id="menu">
+
+    <div class="menu-inner">
+
+        <div class="menu-title">
+            NAVIGATION
+        </div>
+
+        <a href="#home" class="menu-link">
+            <span>00</span>
+            HOME
+        </a>
+
+        <a href="#about" class="menu-link">
+            <span>01</span>
+            ABOUT
+        </a>
+
+        <a href="#findme" class="menu-link">
+            <span>02</span>
+            FIND ME
+        </a>
+
+        <a href="#projects" class="menu-link">
+            <span>03</span>
+            PROJECTS
+        </a>
+
+        <a href="#contact" class="menu-link">
+            <span>04</span>
+            CONTACT
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     音乐
+========================= -->
+
+<audio id="audio"></audio>
+
+
+<!-- =========================
+     主页面
+========================= -->
+
+<main>
+
+
+<!-- HOME -->
+
+<section
+    id="home"
+    class="section hero"
+>
+
+    <div class="hero-content">
+
+        <div class="hero-small">
+            PERSONAL WEBSITE
+        </div>
+
+        <h1>
+            cccccc<span>kgnku</span>
+        </h1>
+
+        <p class="hero-description">
+            A small digital space
+            built around me.
+        </p>
+
+        <div class="hero-line"></div>
+
+        <div class="hero-meta">
+
+            <span>
+                2026
+            </span>
+
+            <span>
+                /
+            </span>
+
+            <span>
+                ONLINE
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-avatar">
+
+        <div class="avatar-glow"></div>
+
+        <img
+            src="web/cacccckgnku.png"
+            alt="cccccckgnku avatar"
+        >
+
+    </div>
+
+
+    <div class="scroll-indicator">
+        SCROLL
+        <span></span>
+    </div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section
+    id="about"
+    class="section content-section"
+>
+
+    <div class="section-number">
+        01
+    </div>
+
+    <div class="section-content">
+
+        <div class="section-label">
+            ABOUT
+        </div>
+
+        <h2>
+            A little<br>
+            <span>about me.</span>
+        </h2>
+
+        <p>
+            Welcome to my personal space.
+            This website collects some of
+            my interests, projects and places
+            where you can find me.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- FIND ME -->
+
+<section
+    id="findme"
+    class="section content-section"
+>
+
+    <div class="section-number">
+        02
+    </div>
+
+    <div class="section-content">
+
+        <div class="section-label">
+            FIND ME
+        </div>
+
+        <h2>
+            Around<br>
+            <span>the internet.</span>
+        </h2>
+
+
+        <div class="links-grid">
+
+            <a
+                href="https://space.bilibili.com/"
+                class="social-link external-link"
+                target="_blank"
+            >
+                <span>BILIBILI</span>
+                <small>01</small>
+            </a>
+
+
+            <a
+                href="#"
+                class="social-link external-link"
+            >
+                <span>QQ GROUP</span>
+                <small>02</small>
+            </a>
+
+
+            <a
+                href="https://www.coolapk.com/"
+                class="social-link external-link"
+                target="_blank"
+            >
+                <span>COOLAPK</span>
+                <small>03</small>
+            </a>
+
+
+            <a
+                href="#"
+                class="social-link external-link"
+            >
+                <span>KUAISHOU</span>
+                <small>04</small>
+            </a>
+
+
+            <a
+                href="#"
+                class="social-link external-link"
+            >
+                <span>DOUYIN</span>
+                <small>05</small>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PROJECTS -->
+
+<section
+    id="projects"
+    class="section content-section"
+>
+
+    <div class="section-number">
+        03
+    </div>
+
+    <div class="section-content">
+
+        <div class="section-label">
+            PROJECTS
+        </div>
+
+        <h2>
+            Things<br>
+            <span>I make.</span>
+        </h2>
+
+
+        <div class="project-list">
+
+            <div class="project">
+                <span>01</span>
+                <strong>PERSONAL WEBSITE</strong>
+                <small>WEB</small>
+            </div>
+
+            <div class="project">
+                <span>02</span>
+                <strong>OC / CHARACTER</strong>
+                <small>ART</small>
+            </div>
+
+            <div class="project">
+                <span>03</span>
+                <strong>OTHER PROJECTS</strong>
+                <small>MORE</small>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CONTACT -->
+
+<section
+    id="contact"
+    class="section contact-section"
+>
+
+    <div class="section-number">
+        04
+    </div>
+
+    <div class="contact-content">
+
+        <div class="section-label">
+            CONTACT
+        </div>
+
+        <h2>
+            See you<br>
+            <span>around.</span>
+        </h2>
+
+        <div class="contact-bottom">
+            cccccc<span>kgnku</span>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     外链提示
+========================= -->
+
+<div
+    class="modal"
+    id="external-modal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-title">
+            EXTERNAL LINK
+        </div>
+
+        <p>
+            You are about to leave this website.
+        </p>
+
+        <div class="modal-buttons">
+
+            <button id="cancel-link">
+                CANCEL
+            </button>
+
+            <button id="confirm-link">
+                CONTINUE
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     超时提示
+========================= -->
+
+<div
+    class="timeout-notice"
+    id="timeout-notice"
+>
+    加载超时，已显示页面
+</div>
+
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
